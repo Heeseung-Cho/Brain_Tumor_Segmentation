@@ -1,0 +1,64 @@
+from __future__ import print_function
+import argparse
+import matplotlib.pyplot as plt
+import numpy as np
+import random
+import pandas as pd
+import torch
+import os
+
+## Module
+from dataLoader import get_datapath, DataSegmentationLoader
+from utils import *
+from models import UNet
+from train import train
+
+parser = argparse.ArgumentParser(description='Pytorch Brain Tumor Segmentation UNet')
+
+parser.add_argument('--in_channel', default=3, type=int,
+                    help='perturbation magnitude')
+parser.add_argument('--out_channel', default=1, type=int,
+                    help='perturbation magnitude')
+parser.add_argument('--epochs', default=1, type=int,
+                    help='perturbation magnitude')
+parser.add_argument('--nfold', default=5, type=int,
+                    help='perturbation magnitude')
+parser.set_defaults(argument=True)
+
+
+def seed_everything(seed: int = 42):
+    random.seed(seed)
+    np.random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    torch.manual_seed(seed)
+    
+def main():    
+    # Import Data
+    global args
+    args = parser.parse_args()    
+    
+    #Use GPU
+    device = 'cuda'  if torch.cuda.is_available() else 'cpu'
+    if torch.cuda.is_available():
+        print(f'CUDA is available. Your device is {device}.')
+    else:
+        print(f'CUDA is not available. Your device is {device}. It can take long time training in CPU.')    
+    
+    #Fix Seed
+    random_state = 42
+    seed_everything(random_state)            
+    
+    #Dataload
+    train_image, train_mask, test_image, test_mask = get_datapath('./data/', random_state)
+
+    train_data = DataSegmentationLoader(train_image, train_mask)
+    test_data = DataSegmentationLoader(test_image)
+
+    test_dataloader = torch.utils.data.DataLoader(test_data, batch_size=1, shuffle=False)
+
+    model = UNet(in_channels=args.in_channel, out_channels=args.out_channel).to(device)
+    loss = DiceLoss()
+    train(train_data, test_data, model, loss, device, args.epochs, args.nfold)
+
+if __name__ == '__main__':
+    main()
