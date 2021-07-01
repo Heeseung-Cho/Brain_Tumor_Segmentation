@@ -49,16 +49,13 @@ def main():
     seed_everything(random_state)            
     
     #Dataload
-    train_image, train_mask, test_image, test_mask = get_datapath('./data/', random_state)
+    image, mask = get_datapath('./data/', random_state)
 
-    train_data = DataSegmentationLoader(train_image, train_mask)
-    test_data = DataSegmentationLoader(test_image)
-
-    test_dataloader = torch.utils.data.DataLoader(test_data, batch_size=1, shuffle=False)
+    dataloader = DataSegmentationLoader(image, mask)
 
     model = UNet(in_channels=args.in_channel, out_channels=args.out_channel).to(device)
     loss = DiceLoss()
-    train(train_data, test_data, model, loss, device, args.epochs, args.nfold)
+    train(dataloader, model, loss, device, args.epochs, args.nfold)
 
 if __name__ == '__main__':
     main()

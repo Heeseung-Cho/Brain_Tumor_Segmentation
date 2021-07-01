@@ -5,7 +5,7 @@ from sklearn.model_selection import KFold
 
 
 # main
-def train(train_data, test_data, model, loss,device,num_epochs, n_folds = 5):
+def train(dataloader, model, loss,device,num_epochs, n_folds = 5):
     results = {}
     folds = KFold(n_splits = n_folds)
     train_losses = []
@@ -13,13 +13,13 @@ def train(train_data, test_data, model, loss,device,num_epochs, n_folds = 5):
     valid_losses = []
     valid_ious = []
 
-    for fold_, (trn_idx, val_idx) in enumerate(folds.split(train_data)):
+    for fold_, (trn_idx, val_idx) in enumerate(folds.split(dataloader)):
         print("fold n°{}".format(fold_+1))
         ##Split by folder and load by dataLoader
         train_subsampler = torch.utils.data.SubsetRandomSampler(trn_idx)
         valid_subsampler = torch.utils.data.SubsetRandomSampler(val_idx)
-        train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=8, sampler=train_subsampler)
-        valid_dataloader = torch.utils.data.DataLoader(train_data, batch_size=8, sampler=valid_subsampler)
+        train_dataloader = torch.utils.data.DataLoader(dataloader, batch_size=8, sampler=train_subsampler)
+        valid_dataloader = torch.utils.data.DataLoader(dataloader, batch_size=8, sampler=valid_subsampler)
 
 
         # Initialize Model

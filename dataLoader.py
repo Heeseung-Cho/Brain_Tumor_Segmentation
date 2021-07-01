@@ -16,7 +16,7 @@ def read_img(img_path):
     """    
     return sitk.GetArrayFromImage(sitk.ReadImage(img_path))
 
-def get_datapath(datadir, random_state, test_size = 0.2):
+def get_datapath(datadir, random_state, test_size = 0.25):
     dirs = []
     images = []
     masks = []
@@ -29,20 +29,14 @@ def get_datapath(datadir, random_state, test_size = 0.2):
 
     train_idx , test_idx = train_test_split(range(len(dirs)), test_size=test_size, random_state=random_state) 
 
-    train_image = []
-    train_mask = []
-    test_image = []
-    test_mask = []
+    image_list = []
+    mask_list = []
     for i in range(len(dirs)):  
         imagePath = os.path.join(datadir, dirs[i], images[i])
         maskPath = os.path.join(datadir, dirs[i], masks[i])    
-        if i in train_idx:
-            train_image.append(imagePath)
-            train_mask.append(maskPath)
-        else:
-            test_image.append(imagePath)
-            test_mask.append(maskPath)       
-    return train_image, train_mask, test_image, test_mask
+        image_list.append(imagePath)
+        mask_list.append(maskPath)       
+    return image_list, mask_list
 
 
 class DataSegmentationLoader(Dataset):
