@@ -28,11 +28,14 @@ def train(dataloader, model, loss,device,num_epochs, n_folds = 5):
         # Initialize optimizer
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
-        for epoch in range(num_epochs):
+        for epoch in range(num_epochs):        
             model.train()
+            train_loss = []
+            train_iou  = [] 
+            valid_loss = []
+            valid_iou  = []           
             for batch_idx, (features,targets) in enumerate(train_dataloader):
-                train_loss = []
-                train_iou  = []            
+           
                 features = features.to(device)
                 targets  = targets.to(device)        
                 optimizer.zero_grad()
@@ -58,8 +61,6 @@ def train(dataloader, model, loss,device,num_epochs, n_folds = 5):
                           )
 
             ##Valid
-            valid_loss = []
-            valid_iou  = []
             model.eval()                
             with torch.no_grad():
                 for batch_idx, (features,targets) in enumerate(valid_dataloader):
@@ -78,7 +79,7 @@ def train(dataloader, model, loss,device,num_epochs, n_folds = 5):
                       epoch+1, num_epochs, 
                       np.mean(valid_loss),
                       np.mean(valid_iou)))
-        results[fold_] = iou
+        results[fold_+1] = np.mean(valid_iou)
 
     # Print fold results
     print(f'\nK-FOLD CROSS VALIDATION RESULTS FOR {n_folds} FOLDS')
