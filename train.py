@@ -8,11 +8,8 @@ from sklearn.model_selection import KFold
 def train(dataloader, model, loss,device,num_epochs, n_folds = 5):
     results = {}
     folds = KFold(n_splits = n_folds)
-    train_losses = []
-    train_ious = []
-    valid_losses = []
-    valid_ious = []
-
+    
+    # KFold Cross Validation
     for fold_, (trn_idx, val_idx) in enumerate(folds.split(dataloader)):
         print("fold n°{}".format(fold_+1))
         ##Split by folder and load by dataLoader
