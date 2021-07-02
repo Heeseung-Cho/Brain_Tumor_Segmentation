@@ -1,6 +1,6 @@
 # Brain_Tumor_Segmentation
-
-
+![image](./image/image_ex.png)
+![mask](./image/mask_ex.png)
 ## Environment & Library
 Python 3.6 is used for this project. You should create new virtual environments under identical conditions.
 <pre>
