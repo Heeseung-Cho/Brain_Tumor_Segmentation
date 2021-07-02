@@ -2,13 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 import SimpleITK as sitk  # For loading the dataset
-import glob  # For populating the list of files
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
 import os
 import math
-from sklearn.model_selection import train_test_split
 
 def read_img(img_path):
     """
@@ -26,8 +24,6 @@ def get_datapath(datadir, random_state, test_size = 0.25):
                 dirs.append(dirname.replace(datadir, ''))
                 masks.append(filename)
                 images.append(filename.replace('_mask', ''))
-
-    train_idx , test_idx = train_test_split(range(len(dirs)), test_size=test_size, random_state=random_state) 
 
     image_list = []
     mask_list = []

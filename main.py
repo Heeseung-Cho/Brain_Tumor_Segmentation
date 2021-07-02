@@ -1,9 +1,6 @@
 from __future__ import print_function
 import argparse
-import matplotlib.pyplot as plt
 import numpy as np
-import random
-import pandas as pd
 import torch
 import os
 
@@ -27,7 +24,6 @@ parser.set_defaults(argument=True)
 
 
 def seed_everything(seed: int = 42):
-    random.seed(seed)
     np.random.seed(seed)
     os.environ["PYTHONHASHSEED"] = str(seed)
     torch.manual_seed(seed)
